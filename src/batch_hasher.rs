@@ -7,11 +7,9 @@ use crate::poseidon::SimplePoseidonBatchHasher;
 #[cfg(any(feature = "cuda", feature = "opencl"))]
 use crate::proteus::gpu::ClBatchHasher;
 use crate::{Arity, BatchHasher, Strength, DEFAULT_STRENGTH};
-#[cfg(any(feature = "cuda", feature = "opencl"))]
-use ec_gpu::GpuField;
+use ec_gpu_gen::rust_gpu_tools::Device;
 use ff::PrimeField;
 use generic_array::GenericArray;
-use rust_gpu_tools::Device;
 
 pub enum Batcher<F, A>
 where
@@ -23,11 +21,10 @@ where
     OpenCl(ClBatchHasher<F, A>),
 }
 
-impl<
-        #[cfg(not(any(feature = "cuda", feature = "opencl")))] F: PrimeField,
-        #[cfg(any(feature = "cuda", feature = "opencl"))] F: PrimeField + GpuField,
-        A: Arity<F>,
-    > Batcher<F, A>
+impl<F, A> Batcher<F, A>
+where
+    F: PrimeField,
+    A: Arity<F>,
 {
     /// Create a new CPU batcher.
     pub fn new_cpu(max_batch_size: usize) -> Self {
