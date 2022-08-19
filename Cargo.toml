@@ -73,6 +73,5 @@ members = [
 
 [patch.crates-io]
 bellperson = { git = "https://github.com/filecoin-project/bellperson", branch = "program-macro" }
-#ec-gpu-gen = { git = "https://github.com/filecoin-project/ec-gpu", branch = "program-macro" }
-ec-gpu-gen = { path = "../ec-gpu/ec-gpu-gen" }
+ec-gpu-gen = { git = "https://github.com/filecoin-project/ec-gpu", branch = "program-macro" }
 pasta_curves = { git = "https://github.com/filecoin-project/pasta_curves", branch = "ec-gpu-020" }
