@@ -5,7 +5,7 @@ mod round_numbers;
 #[cfg(feature = "bls")]
 use blstrs::Scalar as Fr;
 use ec_gpu::GpuField;
-use ec_gpu_gen::{Limb, SourceBuilder};
+use ec_gpu_gen::SourceBuilder;
 #[cfg(feature = "pasta")]
 use pasta_curves::{Fp, Fq as Fv};
 
@@ -125,12 +125,11 @@ fn poseidon_source(field: &str, strength: &str, derived_constants: &DerivedConst
 /// The constants can be generated based on the the arity and the strength. The `derived_constants`
 /// parameter is a list of tuples, where the first element contains the standard strength
 /// parameters, the second element is the strengthed one.
-fn generate_program_from_constants<F, L>(
+fn generate_program_from_constants<F>(
     derived_constants: &[(DerivedConstants, DerivedConstants)],
 ) -> String
 where
     F: GpuField + 'static,
-    L: Limb,
 {
     let mut source = vec![shared(&F::name())];
     for (standard, _strengthened) in derived_constants {
@@ -156,10 +155,7 @@ fn derive_constants(arity: usize) -> (DerivedConstants, DerivedConstants) {
 /// Returns the kernels source based on the set feature flags.
 ///
 /// Kernels for certain arities are enabled by feature flags.
-pub fn generate_program<L>() -> String
-where
-    L: Limb,
-{
+pub fn generate_program() -> SourceBuilder {
     #[cfg(any(feature = "bls", feature = "pasta"))]
     let derived_constants = vec![
         #[cfg(feature = "arity2")]
@@ -178,20 +174,18 @@ where
         derive_constants(36),
     ];
 
-    let source_builder = SourceBuilder::<L>::new();
-    #[cfg(feature = "bls")]
-    let source_builder = source_builder.add_field::<Fr>();
-    #[cfg(feature = "pasta")]
-    let source_builder = source_builder.add_field::<Fp>().add_field::<Fv>();
+    let source_builder = SourceBuilder::new();
 
-    let source = vec![
-        source_builder.build(),
-        #[cfg(feature = "bls")]
-        generate_program_from_constants::<Fr, L>(&derived_constants),
-        #[cfg(feature = "pasta")]
-        generate_program_from_constants::<Fp, L>(&derived_constants),
-        #[cfg(feature = "pasta")]
-        generate_program_from_constants::<Fv, L>(&derived_constants),
-    ];
-    source.join("\n")
+    #[cfg(feature = "bls")]
+    let source_builder = source_builder
+        .add_field::<Fr>()
+        .append_source(generate_program_from_constants::<Fr>(&derived_constants));
+    #[cfg(feature = "pasta")]
+    let source_builder = source_builder
+        .add_field::<Fp>()
+        .add_field::<Fv>()
+        .append_source(generate_program_from_constants::<Fp>(&derived_constants))
+        .append_source(generate_program_from_constants::<Fv>(&derived_constants));
+
+    source_builder
 }
