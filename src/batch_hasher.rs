@@ -9,9 +9,9 @@ use crate::proteus::gpu::ClBatchHasher;
 use crate::{Arity, BatchHasher, Strength, DEFAULT_STRENGTH};
 #[cfg(any(feature = "cuda", feature = "opencl"))]
 use ec_gpu::{GpuField, GpuName};
+use ec_gpu_gen::rust_gpu_tools::Device;
 use ff::PrimeField;
 use generic_array::GenericArray;
-use rust_gpu_tools::Device;
 
 pub enum Batcher<
     #[cfg(not(any(feature = "cuda", feature = "opencl")))] F: PrimeField,

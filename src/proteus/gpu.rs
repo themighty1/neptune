@@ -4,10 +4,10 @@ use crate::hash_type::HashType;
 use crate::poseidon::PoseidonConstants;
 use crate::{Arity, BatchHasher, Strength, DEFAULT_STRENGTH};
 use ec_gpu::{GpuField, GpuName};
+use ec_gpu_gen::rust_gpu_tools::{program_closures, Device, Program};
 use ff::{Field, PrimeField};
 use generic_array::{typenum, ArrayLength, GenericArray};
 use log::info;
-use rust_gpu_tools::{program_closures, Device, Program};
 use std::collections::HashMap;
 use std::marker::PhantomData;
 use typenum::{U11, U2, U8};
@@ -18,9 +18,9 @@ use blstrs::Scalar as Fr;
 use pasta_curves::{Fp, Fq as Fv};
 
 #[cfg(feature = "cuda")]
-use rust_gpu_tools::cuda;
+use ec_gpu_gen::rust_gpu_tools::cuda;
 #[cfg(feature = "opencl")]
-use rust_gpu_tools::opencl;
+use ec_gpu_gen::rust_gpu_tools::opencl;
 use std::ffi::c_void;
 
 #[derive(Debug)]
