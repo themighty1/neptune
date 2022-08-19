@@ -8,7 +8,7 @@ use log::info;
 use neptune::column_tree_builder::{ColumnTreeBuilder, ColumnTreeBuilderTrait};
 use neptune::{batch_hasher::Batcher, BatchHasher};
 use pasta_curves::{Fp, Fq as Fv};
-use rust_gpu_tools::{Device, UniqueId};
+use ec_gpu_gen::rust_gpu_tools::{Device, UniqueId};
 use std::convert::TryFrom;
 use std::str::FromStr;
 use std::thread;
