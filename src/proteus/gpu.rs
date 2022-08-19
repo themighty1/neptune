@@ -124,8 +124,7 @@ where
         max_batch_size: usize,
     ) -> Result<Self, Error> {
         let constants = GpuConstants(PoseidonConstants::<F, A>::new_with_strength(strength));
-        // TODO vmx 2022-08-19: Do proper error handling and not just `unwrap()`.
-        let program = ec_gpu_gen::program!(device).unwrap();
+        let program = ec_gpu_gen::program!(device)?;
 
         // Allocate the buffer only once and re-use it in the hashing steps
         let constants_buffer = match program {

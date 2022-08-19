@@ -60,6 +60,13 @@ impl From<ec_gpu_gen::rust_gpu_tools::GPUError> for Error {
     }
 }
 
+#[cfg(any(feature = "cuda", feature = "opencl"))]
+impl From<ec_gpu_gen::EcError> for Error {
+    fn from(e: ec_gpu_gen::EcError) -> Self {
+        Self::GpuError(format!("EC-GPU error: {}", e))
+    }
+}
+
 impl error::Error for Error {}
 
 impl fmt::Display for Error {
